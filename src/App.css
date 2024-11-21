@@ -1,33 +1,33 @@
-/* General Styles */
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #3498db, #8e44ad); /* Gradient background */
-  min-height: 100vh; /* Ensure the background covers the entire viewport */
+  background: linear-gradient(135deg, #3498db, #8e44ad); 
+  min-height: 100vh; 
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center content horizontally */
-  justify-content: flex-start; /* Start from the top */
+  align-items: center; 
+  justify-content: flex-start; 
 }
 
-/* Header (Weather App Title) */
+
 .header {
   text-align: center;
   padding: 20px;
-  background-color: #fff; /* White background for the title */
+  background-color: #fff; 
   width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .header h1 {
   color: #2c3e50;
-  font-size: 3rem; /* Increase font size for the title */
+  font-size: 3rem; 
   margin: 0;
 }
 
-/* Navbar Styles */
+
 .navbar {
-  background-color: #2c3e50;  /* Dark background */
+  background-color: #2c3e50;  
   padding: 10px 20px;
   position: sticky;
   top: 0;
@@ -40,7 +40,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Center the links */
+  justify-content: center; 
 }
 
 .navbar-list li {
@@ -57,30 +57,30 @@ body {
   color: #3498db;
 }
 
-/* Main Content Box */
+
 .main-content {
-  max-width: 1200px; /* Max width of the box */
+  max-width: 1200px; 
   width: 100%;
-  margin: 20px auto; /* Center the content horizontally */
+  margin: 20px auto; 
   padding: 20px;
-  background-color: #ecf0f1; /* Light background for content box */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  background-color: #ecf0f1; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
-/* Styling for the content inside the box */
+
 h1 {
   text-align: center;
   color: #2c3e50;
   font-size: 2rem;
 }
 
-/* Container for individual page content */
+
 .container {
-  max-width: 800px; /* Content box width */
-  margin: 0 auto; /* Center the container */
+  max-width: 800px; 
+  margin: 0 auto; 
   padding: 20px;
-  background-color: #fff; /* White background for the content */
+  background-color: #fff; 
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }

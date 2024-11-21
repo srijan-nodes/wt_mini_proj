@@ -5,11 +5,9 @@ const SettingsPage = ({ onThemeToggle, onUnitChange }) => {
   const [unit, setUnit] = useState('C');
 
   useEffect(() => {
-    // Check for the theme preference in local storage or default to light mode
     const savedTheme = localStorage.getItem('theme') || 'light';
     setIsDarkMode(savedTheme === 'dark');
     
-    // Check for the temperature unit preference in local storage
     const savedUnit = localStorage.getItem('unit') || 'C';
     setUnit(savedUnit);
   }, []);
@@ -18,21 +16,20 @@ const SettingsPage = ({ onThemeToggle, onUnitChange }) => {
     const newTheme = isDarkMode ? 'light' : 'dark';
     setIsDarkMode(!isDarkMode);
     localStorage.setItem('theme', newTheme);
-    onThemeToggle(newTheme); // Notify the parent component
+    onThemeToggle(newTheme); 
   };
 
   const handleUnitChange = (e) => {
     const newUnit = e.target.value;
     setUnit(newUnit);
     localStorage.setItem('unit', newUnit);
-    onUnitChange(newUnit); // Notify the parent component
+    onUnitChange(newUnit); 
   };
 
   return (
     <div className="settings-page">
       <h1>Settings</h1>
       
-      {/* Theme Toggle */}
       <div className="theme-toggle">
         <label>
           <input 
@@ -44,7 +41,6 @@ const SettingsPage = ({ onThemeToggle, onUnitChange }) => {
         </label>
       </div>
       
-      {/* Temperature Unit Toggle */}
       <div className="unit-toggle">
         <label>
           Temperature Unit: 

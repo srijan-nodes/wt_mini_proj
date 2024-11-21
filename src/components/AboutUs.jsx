@@ -3,7 +3,7 @@ import React from 'react';
 const AboutUs = () => (
   <div className="container">
     <h1>About Us</h1>
-    <p>We are a team of passionate developers building intuitive weather applications.</p>
+    <p>this project was made for easier access to multiple weather details with ease and comfort to select location and various factors</p>
   </div>
 );
 

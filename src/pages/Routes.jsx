@@ -15,7 +15,7 @@ const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<HomePage />} />
     <Route path="/location" element={<LocationSelector />} />
-    <Route path="/detailed" element={<DetailedWeather />} />
+    /<Route path="/details" element={<DetailedWeather />} />
     <Route path="/forecast" element={<Forecast />} />
     <Route path="/map" element={<MapVisualization />} />
     <Route path="/settings" element={<Settings />} />

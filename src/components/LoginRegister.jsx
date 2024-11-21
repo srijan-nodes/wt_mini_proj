@@ -8,34 +8,81 @@ const LoginRegister = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Handle form field changes
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
 
-    if (isLogin) {
-      // Handle Login
-      if (email === 'user@example.com' && password === 'password123') {
-        setSuccessMessage('Login successful! Welcome back.');
+    if (!email || !password) {
+      setErrorMessage('Please fill out all required fields.');
+      return;
+    }
+
+    if (!isLogin && password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
+
+    try {
+      const endpoint = isLogin ? 'api/login' : 'api/register';
+      const response = await fetch(`http://localhost:5000/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage(isLogin ? 'Login successful!' : 'Registration successful!');
+        if (!isLogin) {
+          setEmail('');
+          setPassword('');
+          setConfirmPassword('');
+        }
       } else {
-        setErrorMessage('Invalid email or password.');
+        setErrorMessage(data.message || 'An error occurred.');
       }
-    } else {
-      // Handle Registration
-      if (password !== confirmPassword) {
-        setErrorMessage('Passwords do not match.');
-      } else if (!email || !password || !confirmPassword) {
-        setErrorMessage('All fields are required.');
+    } catch (err) {
+      console.error('Error:', err);
+      setErrorMessage('Failed to connect to the server.');
+    }
+  };
+
+  const deleteUser = async () => {
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (!email) {
+      setErrorMessage('Please provide an email to delete the account.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage('Account deleted successfully.');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setIsLogin(true);
       } else {
-        setSuccessMessage('Registration successful! You can now login.');
-        // You would typically save the user data to a database here
+        setErrorMessage(data.message || 'Failed to delete account.');
       }
+    } catch (err) {
+      console.error('Error:', err);
+      setErrorMessage('An error occurred while deleting the account.');
     }
   };
 
@@ -72,6 +119,15 @@ const LoginRegister = () => {
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
       </form>
+
+      {!isLogin && email && (
+        <button
+          onClick={deleteUser}
+          style={{ marginTop: '10px', backgroundColor: 'red', color: 'white' }}
+        >
+          Delete Account
+        </button>
+      )}
 
       <p onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? 'Need to register?' : 'Already have an account? Login'}

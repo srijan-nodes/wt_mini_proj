@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import WeatherDisplay from './components/WeatherDisplay';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import DetailedWeather from './components/DetailedWeather';  
 
 function App() {
   const [location, setLocation] = useState('');
@@ -16,17 +17,41 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <h1>Weather App</h1>
-      <input
-        type="text"
-        placeholder="Enter location"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-      />
-      <button onClick={fetchWeather}>Get Weather</button>
-      {weatherData && <WeatherDisplay data={weatherData} />}
-    </div>
+    <Router>
+      <div className="app">
+        <h1>Weather App</h1>
+
+        <input
+          type="text"
+          placeholder="Enter location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <button onClick={fetchWeather}>Get Weather</button>
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <h2>Weather Information</h2>
+                {weatherData ? (
+                  <WeatherDisplay data={weatherData} />
+                ) : (
+                  <p>No weather data available</p>
+                )}
+              </div>
+            }
+          />
+          <Route
+            path="/details"
+            element={
+              <DetailedWeather weather={weatherData} /> 
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

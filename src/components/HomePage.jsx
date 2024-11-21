@@ -1,65 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { fetchWeather } from '../api/weatherAPI';  // Assuming fetchWeather is defined in your api module
+import { fetchWeather } from '../api/weatherAPI';  
 import { fetchAirQuality } from '../api/fetchAirQuality';
 import { fetchForecast } from '../api/fetchForecast';
 import { fetchAstronomy } from '../api/fetchAstronomy';
 
 const HomePage = () => {
-  const [location, setLocation] = useState('New York');
+  const [location, setLocation] = useState('Ranchi');
   const [weather, setWeather] = useState(null);
   const [hourly, setHourly] = useState(null);
   const [daily, setDaily] = useState(null);
   const [airQuality, setAirQuality] = useState(null);
   const [astronomy, setAstronomy] = useState(null);
-  const [unit, setUnit] = useState('C'); // 'C' for Celsius, 'F' for Fahrenheit
-  const [theme, setTheme] = useState('light'); // 'light' or 'dark'
+  const [unit, setUnit] = useState('C'); 
+  const [theme, setTheme] = useState('light'); 
 
   const fetchData = (location, unit) => {
-    // Fetching data for weather, forecast, air quality, and astronomy
-    fetchWeather(location, unit).then(data => {
-      if (data) {
-        setWeather(data);
-      }
-    });
-    fetchForecast(location, unit).then(data => {
-      if (data && data.forecast && data.forecast.forecastday) {
-        setHourly(data.forecast.forecastday[0].hour);
-        setDaily(data.forecast.forecastday);
-      }
-    });
-    fetchAirQuality(location).then(data => {
-      if (data) {
-        setAirQuality(data);
-      }
-    });
-    fetchAstronomy(location).then(data => {
-      if (data && data.astronomy) {
-        setAstronomy(data);
-      }
-    });
+    fetchWeather(location, unit)
+      .then(data => {
+        if (data) {
+          setWeather(data);
+        } else {
+          setWeather(null);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching weather:', err);
+        setWeather(null);
+      });
+
+    fetchForecast(location, unit)
+      .then(data => {
+        if (data?.forecast?.forecastday) {
+          setHourly(data.forecast.forecastday[0]?.hour || []);
+          setDaily(data.forecast.forecastday || []);
+        } else {
+          setHourly([]);
+          setDaily([]);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching forecast:', err);
+      });
+
+    fetchAirQuality(location)
+      .then(data => setAirQuality(data || null))
+      .catch(err => console.error('Error fetching air quality:', err));
+
+    fetchAstronomy(location)
+      .then(data => setAstronomy(data?.astronomy || null))
+      .catch(err => console.error('Error fetching astronomy:', err));
   };
 
   useEffect(() => {
-    fetchData(location, unit); // Re-fetch data whenever location or unit changes
-  }, [location, unit]); // Unit change triggers a data re-fetch
+    fetchData(location, unit);
+  }, [location, unit]);
 
   const handleSearch = () => {
-    fetchData(location, unit); // Re-fetch data when a new location is searched
+    if (!location.trim()) {
+      alert('Please enter a location to search!');
+      return;
+    }
+    fetchData(location, unit);
   };
 
   const toggleUnit = () => {
-    setUnit(unit === 'C' ? 'F' : 'C'); // Toggle between Celsius and Fahrenheit
+    setUnit(unit === 'C' ? 'F' : 'C');
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light'); // Toggle between light and dark theme
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   return (
     <div className={`container ${theme}`}>
       <h1>Weather App</h1>
 
-      {/* Search Bar */}
+      
       <div>
         <input 
           type="text" 
@@ -70,7 +86,6 @@ const HomePage = () => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      {/* Settings Section */}
       <div className="settings">
         <h3>Settings</h3>
         <button onClick={toggleUnit}>
@@ -81,64 +96,18 @@ const HomePage = () => {
         </button>
       </div>
 
-      {/* Current Weather */}
-      {weather && (
+      {weather ? (
         <div className="current-weather">
-          <h2>{weather.location.name}</h2>
-          <p>Temperature: {unit === 'C' ? weather.current.temp_c : weather.current.temp_f} °{unit}</p>
-          <p>Condition: {weather.current.condition.text}</p>
-          <p>Wind Speed: {weather.current.wind_kph} km/h</p>
-          <p>Humidity: {weather.current.humidity}%</p>
-          <p>Pressure: {weather.current.pressure_mb} mb</p>
-          <p>Visibility: {weather.current.vis_km} km</p>
+          <h2>{weather?.location?.name || 'Unknown Location'}</h2>
+          <p>Temperature: {unit === 'C' ? weather?.current?.temp_c : weather?.current?.temp_f} °{unit}</p>
+          <p>Condition: {weather?.current?.condition?.text || 'No Data'}</p>
+          <p>Wind Speed: {weather?.current?.wind_kph || 0} km/h</p>
+          <p>Humidity: {weather?.current?.humidity || 0}%</p>
+          <p>Pressure: {weather?.current?.pressure_mb || 'N/A'} mb</p>
+          <p>Visibility: {weather?.current?.vis_km || 0} km</p>
         </div>
-      )}
-
-      {/* Hourly Forecast */}
-      {hourly && (
-        <div className="hourly-forecast">
-          <h3>Hourly Forecast</h3>
-          {hourly.map((hour, index) => (
-            <div key={index}>
-              <p>{hour.time} - Temp: {unit === 'C' ? hour.temp_c : hour.temp_f} °{unit}</p>
-              <p>Condition: {hour.condition.text}</p>
-              <p>Wind Speed: {hour.wind_kph} km/h</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Daily Forecast */}
-      {daily && (
-        <div className="daily-forecast">
-          <h3>Daily Forecast</h3>
-          {daily.map((day, index) => (
-            <div key={index}>
-              <p>{day.date} - Min Temp: {unit === 'C' ? day.mintemp_c : day.mintemp_f} °{unit} | Max Temp: {unit === 'C' ? day.maxtemp_c : day.maxtemp_f} °{unit}</p>
-              <p>Condition: {day.condition.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Air Quality */}
-      {airQuality && (
-        <div className="air-quality">
-          <h3>Air Quality</h3>
-          <p>PM2.5: {airQuality.data.current.air_quality.pm25}</p>
-          <p>PM10: {airQuality.data.current.air_quality.pm10}</p>
-          <p>NO2: {airQuality.data.current.air_quality.no2}</p>
-          <p>AQI: {airQuality.data.current.air_quality.aqi}</p>
-        </div>
-      )}
-
-      {/* Astronomy */}
-      {astronomy && (
-        <div className="astronomy">
-          <h3>Astronomy Data</h3>
-          <p>Sunrise: {astronomy.astronomy.sunrise}</p>
-          <p>Sunset: {astronomy.astronomy.sunset}</p>
-        </div>
+      ) : (
+        <p>No weather data available. Please search for a valid location.</p>
       )}
     </div>
   );
