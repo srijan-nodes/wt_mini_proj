@@ -1,31 +1,32 @@
 
-require('dotenv').config();
+require('dotenv').config(); 
 const express = require('express');
 const mongoose = require('mongoose');
-const connectDB = require('./config/db');
+const connectDB = require('./config/db'); 
 const cors = require('cors');
-const chalk=require('chalk');
 
 const app = express();
 
-app.use(express.json());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(express.json()); 
+app.use(cors({ origin: 'http://localhost:3000', credentials: true })); 
 
-const PORT = process.env.PORT || 5000;
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/login';
+const PORT = process.env.PORT || 5000;  
 
-connectDB(mongoURI);
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/login';  
 
-app.use('/api/login', require('./backend/routes/login'));
+connectDB(mongoURI);  
+
+app.use('/api/login', require('./backend/routes/login')); 
+
 app.use('/api/register', require('./backend/routes/register'));
-app.use('/api/delete', require('./backend/routes/delete')); // Add this route
+ 
 
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
 app.use((req, res, next) => {
-  const error = new Error('successful login');
+  const error = new Error('Not Found');
   error.status = 404;
   next(error);
 });
